@@ -88,15 +88,13 @@ class ApiEmployeeController extends Controller
     {
         $query = Employee::with(['attendances', 'loans']);
 
-        // Filter by employee_id
         if ($request->has('employee_id')) {
             $query->where('id', $request->employee_id);
         }
 
-        // Filter by date range
         if ($request->has(['fromDate', 'toDate'])) {
-            $fromDate = Carbon::parse($request->fromDate)->startOfDay();
-            $toDate = Carbon::parse($request->toDate)->endOfDay();
+            $fromDate = Carbon::parse($request->fromDate);
+            $toDate = Carbon::parse($request->toDate);
 
             $query->whereHas('attendances', function ($q) use ($fromDate, $toDate) {
                 $q->whereBetween('date', [$fromDate, $toDate]);
